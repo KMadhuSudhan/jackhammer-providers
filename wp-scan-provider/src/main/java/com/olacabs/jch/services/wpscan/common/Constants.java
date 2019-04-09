@@ -10,7 +10,8 @@ public class Constants {
     public static final String TEMP_FILE_PREFIX = "wpscan";
     public static final String TEMP_FILE_SUFFIX = ".json";
     public static final String RUBY_CMD = "ruby";
-    public static final String WHITESPACE = " ";
+    public static final String COMMA = ",";
+
 
     //pre deploy
     public static final String WP_SCAN_PRE_DEPLOY_SCRIPT_PATH = "WP_SCAN_PRE_DEPLOY_SCRIPT_PATH";
@@ -24,6 +25,8 @@ public class Constants {
 
     //installation path
     public static final String WP_SCAN_INSTALLATION_PATH = "WP_SCAN_INSTALLATION_PATH";
+    public static final String WP_SCAN_UPDATE_ARG = "--update";
+    public static final String WP_SCAN_UPDATION_PATH = "WP_SCAN_UPDATION_PATH";
 
     //scan
     public static final String SCAN_ERROR_LOG_PATH = "SCAN_ERROR_LOG_PATH";

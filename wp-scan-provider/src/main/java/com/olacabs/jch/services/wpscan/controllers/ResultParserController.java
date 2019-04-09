@@ -8,10 +8,12 @@ import com.olacabs.jch.sdk.spi.ResultParserSpi;
 import com.olacabs.jch.services.wpscan.common.Constants;
 import com.olacabs.jch.services.wpscan.common.ExceptionMessages;
 
+import com.olacabs.jch.services.wpscan.models.ExternalLink;
 import com.olacabs.jch.services.wpscan.models.ParsedFinding;
 import com.olacabs.jch.services.wpscan.models.ScanResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -47,7 +49,8 @@ public class ResultParserController implements ResultParserSpi {
         Finding finding = new Finding();
         finding.setDescription(parsedFinding.getDescription());
         finding.setTitle(parsedFinding.getTitle());
-        finding.setExternalLink(parsedFinding.getExternalLink());
+        finding.setExternalLink(getExternalLink(parsedFinding));
+        finding.setCveCode(getCve(parsedFinding));
         finding.setSeverity(parsedFinding.getSeverity());
         finding.setSolution(parsedFinding.getSolution());
         finding.setToolName(Constants.PROVIDER_NAME);
@@ -56,15 +59,34 @@ public class ResultParserController implements ResultParserSpi {
     }
 
     private String getFingerPrint(Finding finding) {
-        StringBuilder  fingerPrint = new StringBuilder();
+        StringBuilder fingerPrint = new StringBuilder();
         fingerPrint.append(Constants.PROVIDER_NAME);
         fingerPrint.append(finding.getTitle());
         fingerPrint.append(finding.getDescription());
         fingerPrint.append(finding.getSeverity());
         fingerPrint.append(finding.getExternalLink());
+        fingerPrint.append(finding.getCveCode());
         fingerPrint.append(finding.getSolution());
         fingerPrint.append(finding.getSeverity());
         return DigestUtils.sha256Hex(fingerPrint.toString());
+    }
+
+    private String getExternalLink(ParsedFinding parsedFinding) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (parsedFinding.getExternalLink() != null) {
+            for (String externalLink : parsedFinding.getExternalLink().getUrl()) {
+                stringBuilder.append(StringUtils.join(Constants.COMMA, externalLink));
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    private String getCve(ParsedFinding parsedFinding) {
+        String cve = StringUtils.EMPTY;
+        if (parsedFinding.getExternalLink() != null && parsedFinding.getExternalLink().getCve()!=null &&  parsedFinding.getExternalLink().getCve().size() > 0) {
+            cve = parsedFinding.getExternalLink().getCve().get(0);
+        }
+        return cve;
     }
 
     public String getToolName() {

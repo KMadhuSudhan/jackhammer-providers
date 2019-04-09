@@ -3,7 +3,6 @@ package com.olacabs.jch.providers.findsecbugs.controllers;
 import java.io.File;
 import java.io.IOException;
 
-import com.olacabs.jch.providers.findsecbugs.Streamer.StreamGobbler;
 import com.olacabs.jch.providers.findsecbugs.common.ExceptionMessages;
 import com.olacabs.jch.sdk.models.ScanRequest;
 import com.olacabs.jch.sdk.models.ScanResponse;
@@ -38,6 +37,7 @@ public class ScanController implements ScanSpi {
 
         try {
             //run compile
+            String maxHeapSize = System.getenv(Constants.MAX_HEAP_SIZE);
             log.info("mvn compile starting........");
             process = compileBuilder.start();
 //            System.out.println(compileBuilder.redirectError());
@@ -46,15 +46,13 @@ public class ScanController implements ScanSpi {
             log.info("mvn compile completed........");
             //build scan cmd
             File tempFile = File.createTempFile(Constants.TEMP_FILE_PREFIX, Constants.TEMP_FILE_SUFFIX);
-            builder.command(Constants.BASH_PATH, Constants.CLI_SCRIPT_CMD, Constants.EFFORT_MAX_ARG, Constants.QUIET_ARG,
+            builder.command(Constants.BASH_PATH, Constants.CLI_SCRIPT_CMD, Constants.MAX_HEAP, maxHeapSize, Constants.EFFORT_MAX_ARG, Constants.QUIET_ARG,
                     Constants.XML_WITH_MESSAGES_ARG, Constants.OUTPUT_ARG, tempFile.getAbsolutePath(), Constants.BUG_CATEGORIES_ARG,
-                    Constants.BUG_CATEGORIES_ARG_VAL,Constants.TEXT_UI, scanRequest.getTarget());
+                    Constants.BUG_CATEGORIES_ARG_VAL, Constants.TEXT_UI, scanRequest.getTarget());
             //set scan result file
             scanRequest.setResultFile(tempFile);
         } catch (IOException io) {
             log.error("IOException while building find sec bugs scan command", io);
-        } catch (InterruptedException ie) {
-            log.error("InterruptedException while building scan command", ie);
         } catch (Exception e) {
             log.error("Exception while building scan command", e);
         } catch (Throwable th) {

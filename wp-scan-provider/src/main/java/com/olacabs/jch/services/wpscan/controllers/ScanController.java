@@ -19,14 +19,25 @@ public class ScanController implements ScanSpi {
     public ProcessBuilder buildScanCommand(ScanRequest scanRequest) {
         ProcessBuilder builder = new ProcessBuilder();
         Map<String, String> envs = builder.environment();
+
+        //update builder
+        ProcessBuilder updateBuilder = new ProcessBuilder();
+
         File tempFile = null;
         try {
             tempFile = File.createTempFile(Constants.TEMP_FILE_PREFIX, Constants.TEMP_FILE_SUFFIX);
+            updateBuilder.command(Constants.RUBY_CMD, envs.get(Constants.WP_SCAN_UPDATION_PATH), Constants.WP_SCAN_UPDATE_ARG);
+            Process process;
+            process = updateBuilder.start();
+            process.waitFor();
         } catch (IOException e) {
-            log.error("Temp file could not created");
+            log.error("Temp file could not created/IOException while updating wp scan");
+        } catch (InterruptedException ie) {
+            log.error("InterruptedException while updating wp scan", ie);
         }
+
         scanRequest.setResultFile(tempFile);
-        builder.command(Constants.RUBY_CMD,envs.get(Constants.WP_SCAN_INSTALLATION_PATH),scanRequest.getTarget().replace("\"",""),tempFile.getAbsolutePath());
+        builder.command(Constants.RUBY_CMD, envs.get(Constants.WP_SCAN_INSTALLATION_PATH), scanRequest.getTarget().replace("\"", ""), tempFile.getAbsolutePath());
         builder.redirectOutput(new File(envs.get(Constants.SCAN_OUT_PUT_LOG_PATH)));
         builder.redirectError(new File(envs.get(Constants.SCAN_ERROR_LOG_PATH)));
         return builder;

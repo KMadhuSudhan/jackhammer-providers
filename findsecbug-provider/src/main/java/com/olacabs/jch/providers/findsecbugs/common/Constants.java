@@ -70,5 +70,6 @@ public class Constants {
     public static final String CLASS = "Class: ";
     public static final String METHOD = "Method :";
     public static final String LOCATION_SEPARATOR = ",";
-
+    public static final String MAX_HEAP = "-maxHeap";
+    public static final String MAX_HEAP_SIZE = "MAX_HEAP_SIZE";
 }

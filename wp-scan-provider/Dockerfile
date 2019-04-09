@@ -32,7 +32,9 @@ ENV WP_SCAN_PRE_DEPLOY_ERROR_LOG_PATH $WORKSPACE/logs/wp_scan_pre_install_error.
 ENV WP_SCAN_PRE_DEPLOY_OUTPUT_LOG_PATH $WORKSPACE/logs/wp_scan_pre_install_output.log
 ENV WP_SCAN_DEPLOY_ERROR_LOG_PATH $WORKSPACE/logs/wp_scan_install_error.log
 ENV WP_SCAN_DEPLOY_OUTPUT_LOG_PATH $WORKSPACE/logs/wp_scan_install_output.log
+
 ENV WP_SCAN_INSTALLATION_PATH $WORKSPACE/scanner/wp_scan.rb
+ENV WP_SCAN_UPDATION_PATH $WORKSPACE/scanner/wpscan.rb
 ENV SCAN_ERROR_LOG_PATH $WORKSPACE/logs/scan_error.log
 ENV SCAN_OUT_PUT_LOG_PATH $WORKSPACE/logs/scan_output.log
 
